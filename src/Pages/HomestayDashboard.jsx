@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BASE_URL } from "../api";
 import { 
   MapPin, Home as HomeIcon, LogOut, Wallet, User as UserIcon, ArrowLeft, Calendar, MessageSquare, Plus, X, List
 } from "lucide-react";
@@ -36,13 +37,13 @@ function HomestayDashboard() {
       setUser(storedUser);
 
       // GET BOOKINGS WITH HOMESTAY
-      const res = await axios.get(`https://tourmate-backend-1.onrender.com/api/host/dashboard?hostEmail=${encodeURIComponent(storedUser.email)}`, {
+      const res = await axios.get(`${BASE_URL}/api/host/dashboard?hostEmail=${encodeURIComponent(storedUser.email)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setReservedStays(Array.isArray(res.data) ? res.data : []);
 
       // GET MY PROPERTIES
-      const propRes = await axios.get(`https://tourmate-backend-1.onrender.com/api/host?hostEmail=${encodeURIComponent(storedUser.email)}`, {
+      const propRes = await axios.get(`${BASE_URL}/api/host?hostEmail=${encodeURIComponent(storedUser.email)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMyProperties(Array.isArray(propRes.data) ? propRes.data : []);
@@ -66,7 +67,7 @@ function HomestayDashboard() {
     const chatKey = `${activeChat.clientEmail}_host_${activeChat.city}`;
     const fetchMsgs = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+        const res = await fetch(`${BASE_URL}/api/chat/${encodeURIComponent(chatKey)}`);
         const data = await res.json();
         setChatMessages(data);
       } catch {}
@@ -85,13 +86,13 @@ function HomestayDashboard() {
     if (!newMessage.trim() || !activeChat) return;
     const chatKey = `${activeChat.clientEmail}_host_${activeChat.city}`;
     try {
-      await fetch('http://localhost:8080/api/chat', {
+      await fetch(`${BASE_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chatKey, sender: 'host', text: newMessage, timestamp: Date.now() }),
       });
       setNewMessage("");
-      const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+      const res = await fetch(`${BASE_URL}/api/chat/${encodeURIComponent(chatKey)}`);
       setChatMessages(await res.json());
     } catch {}
   };
@@ -107,7 +108,7 @@ function HomestayDashboard() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `https://tourmate-backend-1.onrender.com/api/host/booking/${id}`,
+        `${BASE_URL}/api/host/booking/${id}`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -130,7 +131,7 @@ function HomestayDashboard() {
         city: newPropCity.toLowerCase().trim(),
         status: "PENDING",
       };
-      await axios.post("https://tourmate-backend-1.onrender.com/api/host", newProperty, {
+      await axios.post(`${BASE_URL}/api/host`, newProperty, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNewPropName(""); setNewPropCity(""); setNewPropPrice(""); setNewPropDesc("");
@@ -286,7 +287,7 @@ function HomestayDashboard() {
                           <button onClick={() => handleUpdateStatus(t.id, "rejected")} className="px-3 py-1.5 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition">Reject</button>
                         </>
                       )}
-                      <button onClick={() => openChat(t.email, t.cities)} className="px-4 py-2 bg-slate-900 text-white text-sm rounded-lg hover:bg-slate-800 transition">Contact Guest</button>
+                      <button onClick={() => openChat(t.touristEmail || t.email, t.cities)} className="px-4 py-2 bg-slate-900 text-white text-sm rounded-lg hover:bg-slate-800 transition">Contact Guest</button>
                     </div>
                   </div>
                 ))}

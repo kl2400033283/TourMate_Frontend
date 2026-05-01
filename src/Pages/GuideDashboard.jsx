@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BASE_URL } from "../api";
 import { 
   MapPin, Briefcase, LogOut, Star, User as UserIcon, ArrowLeft, MessageSquare, Users, Wallet
 } from "lucide-react";
@@ -43,7 +44,7 @@ function GuideDashboard() {
       }
 
       const guideName = storedUser.fullName || storedUser.name || "";
-      const res = await axios.get(`https://tourmate-backend-1.onrender.com/api/guide/dashboard?guideName=${encodeURIComponent(guideName)}`, {
+      const res = await axios.get(`${BASE_URL}/api/guide/dashboard?guideName=${encodeURIComponent(guideName)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -53,7 +54,7 @@ function GuideDashboard() {
       setSelectedCity(storedUser.city || "");
 
       // Load guide availability
-      const allGuides = await axios.get("https://tourmate-backend-1.onrender.com/api/guide", {
+      const allGuides = await axios.get(`${BASE_URL}/api/guide`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const myGuide = allGuides.data.find(g => g.guideName === (storedUser.fullName || storedUser.name));
@@ -90,7 +91,7 @@ function GuideDashboard() {
       const token = localStorage.getItem("token");
       const guideName = user?.fullName || user?.name;
       await axios.put(
-        `https://tourmate-backend-1.onrender.com/api/guide/availability/${encodeURIComponent(guideName)}`,
+        `${BASE_URL}/api/guide/availability/${encodeURIComponent(guideName)}`,
         { available: !isAvailable },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -105,7 +106,7 @@ function GuideDashboard() {
       const token = localStorage.getItem("token");
       // Use email to find and update the guide's city
       await axios.put(
-        `https://tourmate-backend-1.onrender.com/api/admin/guide/city/${user.id || 0}`,
+        `${BASE_URL}/api/admin/guide/city/${user.id || 0}`,
         { city },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -119,7 +120,7 @@ function GuideDashboard() {
       try {
         const token = localStorage.getItem("token");
         await axios.put(
-          `https://tourmate-backend-1.onrender.com/api/admin/guide/city/email`,
+          `${BASE_URL}/api/admin/guide/city/email`,
           { email: user.email, city },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -138,7 +139,7 @@ function GuideDashboard() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `https://tourmate-backend-1.onrender.com/api/guide/tour/${tourId}`,
+        `${BASE_URL}/api/guide/tour/${tourId}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -158,7 +159,7 @@ function GuideDashboard() {
     const chatKey = `${activeChat.clientEmail}_guide_${activeChat.city}`;
     const fetchMsgs = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+        const res = await fetch(`${BASE_URL}/api/chat/${encodeURIComponent(chatKey)}`);
         const data = await res.json();
         setChatMessages(data);
       } catch {}
@@ -177,13 +178,13 @@ function GuideDashboard() {
     if (!newMessage.trim() || !activeChat) return;
     const chatKey = `${activeChat.clientEmail}_guide_${activeChat.city}`;
     try {
-      await fetch('http://localhost:8080/api/chat', {
+      await fetch(`${BASE_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chatKey, sender: 'guide', text: newMessage, timestamp: Date.now() }),
       });
       setNewMessage("");
-      const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+      const res = await fetch(`${BASE_URL}/api/chat/${encodeURIComponent(chatKey)}`);
       setChatMessages(await res.json());
     } catch {}
   };
@@ -325,7 +326,7 @@ function GuideDashboard() {
                         <button onClick={() => handleUpdateStatus(t.id, "rejected")} className="px-3 py-1.5 bg-red-500 text-white rounded-md text-sm">Reject</button>
                       </>
                     )}
-                    <button onClick={() => openChat(t.email, t.cities)} className="px-4 py-1.5 bg-slate-900 text-white rounded-md text-sm">Chat</button>
+                    <button onClick={() => openChat(t.touristEmail || t.email, t.cities)} className="px-4 py-1.5 bg-slate-900 text-white rounded-md text-sm">Chat</button>
                   </div>
                 </div>
               ))}

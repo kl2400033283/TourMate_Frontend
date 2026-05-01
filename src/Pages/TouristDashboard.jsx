@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios"; // Added axios import
+import axios from "axios";
+import { BASE_URL } from "../api";
 import {
   MapPin, Compass, Briefcase, LogOut, Ticket, 
   CheckCircle, Clock, Map as MapIcon, Home as HomeIcon, Star, X, User as UserIcon, SearchX, ArrowLeft, MessageSquare
@@ -53,7 +54,7 @@ function TouristDashboard() {
     const chatKey = `${user.email}_${activeChat.type}_${activeChat.city}`;
     const fetchMsgs = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+        const res = await fetch(`${BASE_URL}/api/chat/${encodeURIComponent(chatKey)}`);
         const data = await res.json();
         setChatMessages(data);
       } catch {}
@@ -72,14 +73,13 @@ function TouristDashboard() {
      if (!newMessage.trim() || !activeChat || !user) return;
      const chatKey = `${user.email}_${activeChat.type}_${activeChat.city}`;
      try {
-       await fetch('http://localhost:8080/api/chat', {
+       await fetch(`${BASE_URL}/api/chat`, {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({ chatKey, sender: 'tourist', text: newMessage, timestamp: Date.now() }),
        });
        setNewMessage("");
-       // refresh immediately after send
-       const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+       const res = await fetch(`${BASE_URL}/api/chat/${encodeURIComponent(chatKey)}`);
        setChatMessages(await res.json());
      } catch {}
   };
@@ -88,7 +88,7 @@ function TouristDashboard() {
   useEffect(() => {
     const fetchBookings = async (currentUser, token) => {
       try {
-        const res = await axios.get(`https://tourmate-backend-1.onrender.com/api/bookings/user?email=${currentUser.email}`, {
+        const res = await axios.get(`${BASE_URL}/api/bookings/user?email=${currentUser.email}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setBookings(res.data);
