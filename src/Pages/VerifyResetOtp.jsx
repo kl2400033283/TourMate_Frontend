@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import axios from "axios";
+import { BASE_URL } from "../api";
 
 function VerifyResetOtp() {
   const [otp, setOtp] = useState("");
@@ -13,7 +14,7 @@ function VerifyResetOtp() {
     e.preventDefault();
 
     try {
-      await axios.post("https://tourmate-backend-1.onrender.com/api/auth/verify-otp", {
+      await axios.post(`${BASE_URL}/api/auth/verify-otp`, {
         email,
         otp
       });
