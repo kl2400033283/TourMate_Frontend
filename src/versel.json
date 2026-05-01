@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/oauth2/(.*)", "destination": "/" },
+    { "source": "/chat", "destination": "/" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
