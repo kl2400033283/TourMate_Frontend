@@ -17,15 +17,23 @@ function TouristDashboard() {
 
   const userCities = [...new Set(bookings.map(b => b.cities?.toLowerCase().trim() || ""))];
   
-  const hiredGuides = userCities.map(cityKey => {
-     const gName = localStorage.getItem(`guideName_${cityKey}`);
-     return gName ? { city: cityKey, name: gName } : null;
-  }).filter(g => g !== null);
+  const hiredGuides = bookings
+    .filter(b => b.guideName)
+    .reduce((acc, b) => {
+      const key = `${b.guideName}_${b.cities?.toLowerCase().trim()}`;
+      if (!acc.find(g => g.key === key))
+        acc.push({ key, name: b.guideName, city: b.cities?.toLowerCase().trim() });
+      return acc;
+    }, []);
 
-  const bookedStays = userCities.map(cityKey => {
-     const hName = localStorage.getItem(`homestayName_${cityKey}`);
-     return hName ? { city: cityKey, name: hName } : null;
-  }).filter(h => h !== null);
+  const bookedStays = bookings
+    .filter(b => b.homestayName)
+    .reduce((acc, b) => {
+      const key = `${b.homestayName}_${b.cities?.toLowerCase().trim()}`;
+      if (!acc.find(s => s.key === key))
+        acc.push({ key, name: b.homestayName, city: b.cities?.toLowerCase().trim() });
+      return acc;
+    }, []);
 
   const openModal = (title, filterFn) => {
     setModalTitle(title);
@@ -41,18 +49,18 @@ function TouristDashboard() {
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-    if (activeChat && user) {
-       const loadChats = () => {
-          const chats = JSON.parse(localStorage.getItem('tourmateChats')) || {};
-          const chatKey = `${user.email}_${activeChat.type}_${activeChat.city}`;
-          setChatMessages(chats[chatKey] || []);
-       };
-       loadChats();
-       
-       const handleStorage = () => loadChats();
-       window.addEventListener('storage', handleStorage);
-       return () => window.removeEventListener('storage', handleStorage);
-    }
+    if (!activeChat || !user) return;
+    const chatKey = `${user.email}_${activeChat.type}_${activeChat.city}`;
+    const fetchMsgs = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+        const data = await res.json();
+        setChatMessages(data);
+      } catch {}
+    };
+    fetchMsgs();
+    const interval = setInterval(fetchMsgs, 3000);
+    return () => clearInterval(interval);
   }, [activeChat, user]);
 
   const openChat = (name, city, type) => {
@@ -60,23 +68,20 @@ function TouristDashboard() {
     setActiveTab("Messages");
   };
 
-  const handleSendMessage = () => {
-     if(!newMessage.trim() || !activeChat || !user) return;
-     
-     const chats = JSON.parse(localStorage.getItem('tourmateChats')) || {};
+  const handleSendMessage = async () => {
+     if (!newMessage.trim() || !activeChat || !user) return;
      const chatKey = `${user.email}_${activeChat.type}_${activeChat.city}`;
-     
-     const roomMessages = chats[chatKey] || [];
-     const newMsg = { sender: 'tourist', text: newMessage, timestamp: Date.now() };
-     
-     const updatedMessages = [...roomMessages, newMsg];
-     chats[chatKey] = updatedMessages;
-     
-     localStorage.setItem('tourmateChats', JSON.stringify(chats));
-     setChatMessages(updatedMessages);
-     setNewMessage("");
-     
-     window.dispatchEvent(new Event('storage'));
+     try {
+       await fetch('http://localhost:8080/api/chat', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ chatKey, sender: 'tourist', text: newMessage, timestamp: Date.now() }),
+       });
+       setNewMessage("");
+       // refresh immediately after send
+       const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+       setChatMessages(await res.json());
+     } catch {}
   };
 
   // ✅ UPDATED FETCH BLOCK
@@ -499,7 +504,7 @@ function TripCard({ b, onContactHost }) {
       {hName && onContactHost && (
         <div className="pt-2 border-t border-gray-100 flex justify-between items-center">
            <span className="text-xs text-gray-500 font-medium">Stay: {hName}</span>
-           <button onClick={(e) => { e.stopPropagation(); onContactHost(hName, b.city); }} className="text-xs bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1.5 rounded-md hover:bg-yellow-100 font-medium transition">Message Host</button>
+           <button onClick={(e) => { e.stopPropagation(); onContactHost(hName, b.cities); }} className="text-xs bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1.5 rounded-md hover:bg-yellow-100 font-medium transition">Message Host</button>
         </div>
       )}
     </div>

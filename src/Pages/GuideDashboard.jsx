@@ -154,14 +154,18 @@ function GuideDashboard() {
 
   // ✅ CHAT LOGIC (Local Storage based)
   useEffect(() => {
-    if (activeChat) {
-      const loadChats = () => {
-        const chats = JSON.parse(localStorage.getItem('tourmateChats')) || {};
-        const chatKey = `${activeChat.clientEmail}_guide_${activeChat.city}`;
-        setChatMessages(chats[chatKey] || []);
-      };
-      loadChats();
-    }
+    if (!activeChat) return;
+    const chatKey = `${activeChat.clientEmail}_guide_${activeChat.city}`;
+    const fetchMsgs = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+        const data = await res.json();
+        setChatMessages(data);
+      } catch {}
+    };
+    fetchMsgs();
+    const interval = setInterval(fetchMsgs, 3000);
+    return () => clearInterval(interval);
   }, [activeChat]);
 
   const openChat = (clientEmail, city) => {
@@ -169,16 +173,19 @@ function GuideDashboard() {
     setActiveTab("Messages");
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!newMessage.trim() || !activeChat) return;
-    const chats = JSON.parse(localStorage.getItem('tourmateChats')) || {};
     const chatKey = `${activeChat.clientEmail}_guide_${activeChat.city}`;
-    const newMsg = { sender: 'guide', text: newMessage, timestamp: Date.now() };
-    const updated = [...(chats[chatKey] || []), newMsg];
-    chats[chatKey] = updated;
-    localStorage.setItem('tourmateChats', JSON.stringify(chats));
-    setChatMessages(updated);
-    setNewMessage("");
+    try {
+      await fetch('http://localhost:8080/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatKey, sender: 'guide', text: newMessage, timestamp: Date.now() }),
+      });
+      setNewMessage("");
+      const res = await fetch(`http://localhost:8080/api/chat/${encodeURIComponent(chatKey)}`);
+      setChatMessages(await res.json());
+    } catch {}
   };
 
   if (!user) return null;
