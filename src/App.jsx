@@ -12,6 +12,7 @@ import Attraction from "./Pages/Attraction";
 import Plan from "./Pages/Plan";
 import Homestay from "./Pages/Homestay";
 import Guide from "./Pages/Guide";
+import OAuth2Callback from "./Pages/OAuth2Callback";
 
 // Dashboard Components
 import TouristDashboard from "./Pages/TouristDashboard";
