@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = "https://tourmate-backend-1.onrender.com";
 const API = `${BASE_URL}/api/auth`;
 
 // LOGIN
