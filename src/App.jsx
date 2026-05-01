@@ -83,7 +83,7 @@ function Layout() {
         <Route path="/guide-dashboard" element={<GuideDashboard />} />
         <Route path="/host-dashboard" element={<HomestayDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        
+        <Route path="/oauth2/callback" element={<OAuth2Callback />} />
       </Routes>
     </>
   );
