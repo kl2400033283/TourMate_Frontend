@@ -80,19 +80,19 @@ function AdminDashboard() {
 
       setUser(storedUser);
 
-      const usersRes = await axios.get("http://localhost:8080/api/admin/users", {
+      const usersRes = await axios.get("https://tourmate-backend-1.onrender.com/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` }
       });
       const usersData = usersRes.data?.data ?? usersRes.data;
       setAllUsers(Array.isArray(usersData) ? usersData : []);
 
-      const plansRes = await axios.get("http://localhost:8080/api/admin/bookings", {
+      const plansRes = await axios.get("https://tourmate-backend-1.onrender.com/api/admin/bookings", {
         headers: { Authorization: `Bearer ${token}` }
       });
       const plansData = plansRes.data?.data ?? plansRes.data;
       setAllPlans(Array.isArray(plansData) ? plansData : []);
 
-      const propertyRes = await axios.get("http://localhost:8080/api/admin/properties", {
+      const propertyRes = await axios.get("https://tourmate-backend-1.onrender.com/api/admin/properties", {
         headers: { Authorization: `Bearer ${token}` }
       });
       const propData = propertyRes.data?.data ?? propertyRes.data;
@@ -120,7 +120,7 @@ function AdminDashboard() {
         try {
           const formattedEmail = guide.name.toLowerCase().replace(/\s+/g, '') + "@guide.com";
           await axios.post(
-            "http://localhost:8080/api/auth/signup",
+            "https://tourmate-backend-1.onrender.com/api/auth/signup",
             {
               name: guide.name,
               email: formattedEmail,
@@ -152,7 +152,7 @@ function AdminDashboard() {
       let count = 0;
       for (const u of demoUsers) {
         await axios.put(
-          `http://localhost:8080/api/admin/user/${u.id}`,
+          `https://tourmate-backend-1.onrender.com/api/admin/user/${u.id}`,
           { status: "approved" },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -171,7 +171,7 @@ function AdminDashboard() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:8080/api/admin/user/${id}`,
+        `https://tourmate-backend-1.onrender.com/api/admin/user/${id}`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -185,7 +185,7 @@ function AdminDashboard() {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:8080/api/admin/user/${id}`, {
+      await axios.delete(`https://tourmate-backend-1.onrender.com/api/admin/user/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAllUsers(prev => prev.filter(u => u.id !== id));
@@ -198,7 +198,7 @@ function AdminDashboard() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:8080/api/admin/property/${id}`,
+        `https://tourmate-backend-1.onrender.com/api/admin/property/${id}`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );

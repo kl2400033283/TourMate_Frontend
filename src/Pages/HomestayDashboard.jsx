@@ -36,13 +36,13 @@ function HomestayDashboard() {
       setUser(storedUser);
 
       // GET BOOKINGS WITH HOMESTAY
-      const res = await axios.get(`http://localhost:8080/api/host/dashboard?hostEmail=${encodeURIComponent(storedUser.email)}`, {
+      const res = await axios.get(`https://tourmate-backend-1.onrender.com/api/host/dashboard?hostEmail=${encodeURIComponent(storedUser.email)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setReservedStays(Array.isArray(res.data) ? res.data : []);
 
       // GET MY PROPERTIES
-      const propRes = await axios.get(`http://localhost:8080/api/host?hostEmail=${encodeURIComponent(storedUser.email)}`, {
+      const propRes = await axios.get(`https://tourmate-backend-1.onrender.com/api/host?hostEmail=${encodeURIComponent(storedUser.email)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMyProperties(Array.isArray(propRes.data) ? propRes.data : []);
@@ -102,7 +102,7 @@ function HomestayDashboard() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:8080/api/host/booking/${id}`,
+        `https://tourmate-backend-1.onrender.com/api/host/booking/${id}`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -125,7 +125,7 @@ function HomestayDashboard() {
         city: newPropCity.toLowerCase().trim(),
         status: "PENDING",
       };
-      await axios.post("http://localhost:8080/api/host", newProperty, {
+      await axios.post("https://tourmate-backend-1.onrender.com/api/host", newProperty, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNewPropName(""); setNewPropCity(""); setNewPropPrice(""); setNewPropDesc("");

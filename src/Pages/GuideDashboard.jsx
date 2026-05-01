@@ -43,7 +43,7 @@ function GuideDashboard() {
       }
 
       const guideName = storedUser.fullName || storedUser.name || "";
-      const res = await axios.get(`http://localhost:8080/api/guide/dashboard?guideName=${encodeURIComponent(guideName)}`, {
+      const res = await axios.get(`https://tourmate-backend-1.onrender.com/api/guide/dashboard?guideName=${encodeURIComponent(guideName)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -53,7 +53,7 @@ function GuideDashboard() {
       setSelectedCity(storedUser.city || "");
 
       // Load guide availability
-      const allGuides = await axios.get("http://localhost:8080/api/guide", {
+      const allGuides = await axios.get("https://tourmate-backend-1.onrender.com/api/guide", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const myGuide = allGuides.data.find(g => g.guideName === (storedUser.fullName || storedUser.name));
@@ -90,7 +90,7 @@ function GuideDashboard() {
       const token = localStorage.getItem("token");
       const guideName = user?.fullName || user?.name;
       await axios.put(
-        `http://localhost:8080/api/guide/availability/${encodeURIComponent(guideName)}`,
+        `https://tourmate-backend-1.onrender.com/api/guide/availability/${encodeURIComponent(guideName)}`,
         { available: !isAvailable },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -105,7 +105,7 @@ function GuideDashboard() {
       const token = localStorage.getItem("token");
       // Use email to find and update the guide's city
       await axios.put(
-        `http://localhost:8080/api/admin/guide/city/${user.id || 0}`,
+        `https://tourmate-backend-1.onrender.com/api/admin/guide/city/${user.id || 0}`,
         { city },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -119,7 +119,7 @@ function GuideDashboard() {
       try {
         const token = localStorage.getItem("token");
         await axios.put(
-          `http://localhost:8080/api/admin/guide/city/email`,
+          `https://tourmate-backend-1.onrender.com/api/admin/guide/city/email`,
           { email: user.email, city },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -138,7 +138,7 @@ function GuideDashboard() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:8080/api/guide/tour/${tourId}`,
+        `https://tourmate-backend-1.onrender.com/api/guide/tour/${tourId}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );

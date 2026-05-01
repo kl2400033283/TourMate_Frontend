@@ -35,7 +35,7 @@ function Signup() {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/auth/signup",
+        "https://tourmate-backend-1.onrender.com/api/auth/signup",
         {
           name: form.fullName,             
           email: form.email.trim(),
@@ -68,7 +68,7 @@ function Signup() {
           { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } }
         );
 
-        const res = await axios.post("http://localhost:8080/api/auth/google-login", {
+        const res = await axios.post("https://tourmate-backend-1.onrender.com/api/auth/google-login", {
           email: googleUser.email,
           name: googleUser.name,
           role: form.role,

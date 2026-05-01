@@ -83,7 +83,7 @@ function TouristDashboard() {
   useEffect(() => {
     const fetchBookings = async (currentUser, token) => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/bookings/user?email=${currentUser.email}`, {
+        const res = await axios.get(`https://tourmate-backend-1.onrender.com/api/bookings/user?email=${currentUser.email}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setBookings(res.data);

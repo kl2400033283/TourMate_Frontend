@@ -13,7 +13,7 @@ function Guide() {
   useEffect(() => {
     const fetchApprovedGuides = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/api/admin/approved-guides?city=${encodeURIComponent(city?.toLowerCase().trim() || "")}`);
+        const res = await fetch(`https://tourmate-backend-1.onrender.com/api/admin/approved-guides?city=${encodeURIComponent(city?.toLowerCase().trim() || "")}`);
         const data = await res.json();
         const liveGuides = (Array.isArray(data) ? data : []).map(u => ({
           name: u.name,
@@ -65,7 +65,7 @@ function Guide() {
       const plan = JSON.parse(localStorage.getItem("currentPlan")) || {};
 
       const bookings = await fetch(
-        `http://localhost:8080/api/bookings/user?email=${encodeURIComponent(user?.email)}`,
+        `https://tourmate-backend-1.onrender.com/api/bookings/user?email=${encodeURIComponent(user?.email)}`,
         { headers: { Authorization: `Bearer ${token}` } }
       ).then(r => r.json()).catch(() => []);
 
@@ -74,13 +74,13 @@ function Guide() {
       );
 
       if (match) {
-        await fetch(`http://localhost:8080/api/bookings/${match.id}`, {
+        await fetch(`https://tourmate-backend-1.onrender.com/api/bookings/${match.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({ ...match, guideName: guide.name }),
         });
       } else {
-        await fetch("http://localhost:8080/api/bookings", {
+        await fetch("https://tourmate-backend-1.onrender.com/api/bookings", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({

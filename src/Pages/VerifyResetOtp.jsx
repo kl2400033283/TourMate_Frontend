@@ -13,7 +13,7 @@ function VerifyResetOtp() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:8080/api/auth/verify-otp", {
+      await axios.post("https://tourmate-backend-1.onrender.com/api/auth/verify-otp", {
         email,
         otp
       });

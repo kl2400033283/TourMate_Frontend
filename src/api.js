@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:8080/api/auth";
+const API = "https://tourmate-backend-1.onrender.com/api/auth";
 
 // LOGIN
 export const login = (data) => axios.post(`${API}/login`, data);

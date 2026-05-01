@@ -181,7 +181,7 @@ function Plan() {
 
       // Check if booking already exists for this tourist+city+dates
       const existing = await fetch(
-        `http://localhost:8080/api/bookings/user?email=${encodeURIComponent(currentUser.email)}`,
+        `https://tourmate-backend-1.onrender.com/api/bookings/user?email=${encodeURIComponent(currentUser.email)}`,
         { headers: { Authorization: `Bearer ${token}` } }
       ).then(r => r.json()).catch(() => []);
 
@@ -191,14 +191,14 @@ function Plan() {
 
       if (match) {
         // Update existing booking with guide/homestay
-        await fetch(`http://localhost:8080/api/bookings/${match.id}`, {
+        await fetch(`https://tourmate-backend-1.onrender.com/api/bookings/${match.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({ ...match, guideName: gName, homestayName: hName }),
         });
       } else {
         // Create new booking
-        await fetch("http://localhost:8080/api/bookings", {
+        await fetch("https://tourmate-backend-1.onrender.com/api/bookings", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({
