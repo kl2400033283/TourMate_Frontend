@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { useEffect } from "react";
 
 // Existing Core Pages
+import OAuth2Callback from "./Pages/OAuth2Callback";
 import Home from "./Pages/Home";
 import AboutUs from "./Pages/AboutUs"; 
 import Login from "./Pages/Login";
@@ -12,7 +13,7 @@ import Attraction from "./Pages/Attraction";
 import Plan from "./Pages/Plan";
 import Homestay from "./Pages/Homestay";
 import Guide from "./Pages/Guide";
-import OAuth2Callback from "./Pages/OAuth2Callback";
+
 
 // Dashboard Components
 import TouristDashboard from "./Pages/TouristDashboard";
